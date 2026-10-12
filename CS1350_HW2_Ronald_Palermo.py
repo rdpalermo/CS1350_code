@@ -1,256 +1,567 @@
-# CS1350 Mini-Project 1: Contact Manager - Dictionaries & Dictionary Patterns
-# Rename this file to CS1350_HW2_FirstName_LastName.py before submitting.
 
-# ---------------------------------------------------------------------------
-# Data (Phases 2-6)
-# ---------------------------------------------------------------------------
-
-# Contact records: name -> dictionary of details
-contact_book = {
-    "Mom": {"phone": "555-1234", "category": "Family", "city": "Fort Wayne"},
-    "Dad": {"phone": "555-4321", "category": "Family", "city": "Fort Wayne"},
-    "Sister": {"phone": "555-7777", "category": "Family", "city": "Chicago"},
-    "Best Friend": {"phone": "555-8888", "category": "Friend", "city": "Indianapolis"},
-    "Roommate": {"phone": "555-3141", "category": "Friend", "city": "Fort Wayne"},
-    "Boss": {"phone": "555-0000", "category": "Work", "city": "Chicago"},
-    "Professor": {"phone": "555-2718", "category": "Work", "city": "Fort Wayne"},
-    "Dentist": {"phone": "555-2222", "category": "Business", "city": "Indianapolis"},
-}
-
-# Call log: name -> {month -> minutes talked that month}
-# Note: not every contact was called every month.
-call_log = {
-    "Mom": {"Jan": 120, "Feb": 95, "Mar": 140},
-    "Dad": {"Jan": 45, "Feb": 60, "Mar": 30},
-    "Sister": {"Jan": 80, "Mar": 70},
-    "Best Friend": {"Jan": 200, "Feb": 180, "Mar": 220},
-    "Roommate": {"Feb": 15, "Mar": 25},
-    "Boss": {"Jan": 60, "Feb": 90, "Mar": 75},
-    "Professor": {"Feb": 20, "Mar": 35},
-    "Dentist": {"Jan": 10},
-}
-
-# ===========================================================================
-# Phase 1: Creating Contact Manager
-# ===========================================================================
-print("=== Phase 1: Quick Contacts ===")
-
-# Build the quick_contacts dictionary one entry at a time
-quick_contacts = {}
-quick_contacts["Mom"] = "555-1234"
-quick_contacts["Dad"] = "555-5678"
-quick_contacts["Best Friend"] = "555-8888"
-quick_contacts["Pizza Place"] = "555-9999"
-quick_contacts["Work"] = "555-0000"
-print(quick_contacts)
-
-print("--- Access and Modify ---")
-# Bracket notation lookup
-print(f"Mom's number: {quick_contacts['Mom']}")
-
-# Update Dad's number
-quick_contacts["Dad"] = "555-4321"
-
-# Add a new contact
-quick_contacts["Dentist"] = "555-2222"
-
-# Safe lookup with get() - won't crash on a missing key
-grandma_lookup = quick_contacts.get("Grandma", "Contact not found")
-print(f"Looking up Grandma: {grandma_lookup}")
-
-print(f"Updated contacts: {quick_contacts}")
-
-print("--- Delete and Analyze ---")
-# Remove with del (no return value)
-del quick_contacts["Pizza Place"]
-
-# Remove with pop() (returns the value that was removed)
-old_work = quick_contacts.pop("Work")
-print(f"Removed work number: {old_work}")
-
-print(f"Contacts remaining: {len(quick_contacts)}")
-print(f"Contact names: {list(quick_contacts.keys())}")
-print(f"Phone numbers: {list(quick_contacts.values())}")
+"""
+CS1350 Homework 2
+Dictionary Practice Exercises
+Name: Ronnie Palermo
+"""
 
 
-# ===========================================================================
-# Phase 2: Per-Contact Statistics - Nested Iteration
-# ===========================================================================
-print("\n=== Phase 2: Contact Activity ===")
-
-# Every later phase depends on this dictionary
-total_minutes = {}
-
-for name, months in call_log.items():
-    num_months = len(months)
-    total = sum(months.values())
-    avg = total / num_months
-
-    # Running-maximum pattern to find the busiest month
-    busiest_month = None
-    busiest_minutes = 0
-    for month, minutes in months.items():
-        if minutes > busiest_minutes:
-            busiest_minutes = minutes
-            busiest_month = month
-
-    total_minutes[name] = total
-
-    print(f"{name}: {num_months} month(s), {total} min total, "
-          f"avg: {avg:.2f}, busiest: {busiest_month} ({busiest_minutes})")
+import time
+import sys
 
 
-# ===========================================================================
-# Phase 3: Flipping the Data & Aggregating with get()
-# ===========================================================================
-print("\n=== Phase 3: Aggregations ===")
+# ==================================================
+# UNIT 1.1 - WHAT ARE DICTIONARIES?
+# ==================================================
 
-# --- Part A: month_stats (call_log organized by month instead of contact) ---
-month_stats = {}
-for name, months in call_log.items():
-    for month, minutes in months.items():
-        if month not in month_stats:
-            month_stats[month] = {"minutes": [], "total": 0, "avg": 0, "contacts": 0}
-        month_stats[month]["minutes"].append(minutes)
+# Beginner - 5 points
+def unit_1_1_beginner():
+    print("\nUNIT 1.1 - BEGINNER")
 
-for month, stats in month_stats.items():
-    stats["total"] = sum(stats["minutes"])
-    stats["contacts"] = len(stats["minutes"])
-    stats["avg"] = stats["total"] / stats["contacts"]
+    my_info = {
+        "name": "Ronnie",
+        "age": 19,
+        "major": "Cyber Security"
+    }
 
-print("Monthly summary (sorted by average, highest first):")
-for month, stats in sorted(month_stats.items(), key=lambda item: item[1]["avg"], reverse=True):
-    print(f"  {month}: {stats['total']} min total, {stats['avg']:.2f} avg "
-          f"({stats['contacts']} contacts)")
-
-# --- Part B: category / city / headcount rollups using the get() pattern ---
-minutes_by_category = {}
-minutes_by_city = {}
-contacts_per_city = {}
-
-for name, total in total_minutes.items():
-    info = contact_book[name]
-    category = info["category"]
-    city = info["city"]
-
-    minutes_by_category[category] = minutes_by_category.get(category, 0) + total
-    minutes_by_city[city] = minutes_by_city.get(city, 0) + total
-    contacts_per_city[city] = contacts_per_city.get(city, 0) + 1
-
-print(f"Minutes by category: {minutes_by_category}")
-print(f"Minutes by city: {minutes_by_city}")
-print(f"Contacts per city: {contacts_per_city}")
+    print(my_info)
 
 
-# ===========================================================================
-# Phase 4: Dictionary Comprehensions
-# ===========================================================================
-print("\n=== Phase 4: Comprehensions ===")
+# Intermediate - 10 points
+def unit_1_1_intermediate():
+    print("\nUNIT 1.1 - INTERMEDIATE")
 
-phone_book = {name: info["phone"] for name, info in contact_book.items()}
+    menu = {
+        "burger": 8.99,
+        "fries": 3.49,
+        "pizza": 12.50,
+        "salad": 6.75
+    }
 
-local_contacts = {name: info["phone"] for name, info in contact_book.items()
-                   if info["city"] == "Fort Wayne"}
+    course_credits = {
+        "CS1350": 3,
+        "CS1330": 3,
+        "MATH201": 4
+    }
 
-activity_level = {name: ("Frequent" if total >= 200 else "Occasional")
-                   for name, total in total_minutes.items()}
-
-print(f"Phone book: {phone_book}")
-print(f"Local contacts (Fort Wayne): {local_contacts}")
-print(f"Activity level: {activity_level}")
-
-
-# ===========================================================================
-# Phase 5: Tiers, Distribution, and Rankings
-# ===========================================================================
-print("\n=== Phase 5: Tier Report ===")
+    print("Menu:", menu)
+    print("Course credits:", course_credits)
 
 
-def get_tier(minutes):
-    """Classify total minutes into a loyalty tier."""
-    if minutes >= 400:
-        return "Platinum"
-    elif minutes >= 200:
-        return "Gold"
-    elif minutes >= 100:
-        return "Silver"
-    elif minutes >= 50:
-        return "Bronze"
+# Advanced - 15 points
+def unit_1_1_advanced():
+    print("\nUNIT 1.1 - ADVANCED")
+
+    weekly_temps = dict(
+        Monday=72,
+        Tuesday=75,
+        Wednesday=68,
+        Thursday=70,
+        Friday=73,
+        Saturday=77,
+        Sunday=71
+    )
+
+    print("Weekly temperatures:", weekly_temps)
+
+
+# ==================================================
+# UNIT 1.2 - ACCESSING DICTIONARY ELEMENTS
+# ==================================================
+
+# Beginner - 5 points
+def unit_1_2_beginner():
+    print("\nUNIT 1.2 - BEGINNER")
+
+    pet = {
+        "name": "Buddy",
+        "type": "dog",
+        "age": 3
+    }
+
+    print("Pet name:", pet["name"])
+    print("Pet age:", pet["age"])
+
+
+# Intermediate - 10 points
+def unit_1_2_intermediate():
+    print("\nUNIT 1.2 - INTERMEDIATE")
+
+    pet = {
+        "name": "Buddy",
+        "type": "dog",
+        "age": 3
+    }
+
+    print("Pet color:", pet.get("color", "unknown"))
+
+    grades = {
+        "CS1350": 88,
+        "MATH201": 67,
+        "ENG101": 91
+    }
+
+    course = "CS1350"
+    grade = grades.get(course)
+
+    if grade is not None:
+        if grade >= 70:
+            print(course, "passed with grade", grade)
+        else:
+            print(course, "failed with grade", grade)
     else:
-        return "Inactive"
+        print("Course grade not found")
 
 
-# --- Part A: Classify ---
-tiers = {}
-for name, total in total_minutes.items():
-    tier = get_tier(total)
-    tiers[name] = tier
-    print(f"{name}: {total} min ({tier})")
+# Advanced - 15 points
+def unit_1_2_advanced():
+    print("\nUNIT 1.2 - ADVANCED")
 
-# --- Part B: Count ---
-print("--- Tier Distribution ---")
-tier_counts = {"Platinum": 0, "Gold": 0, "Silver": 0, "Bronze": 0, "Inactive": 0}
-for name, tier in tiers.items():
-    if tier == "Platinum":
-        tier_counts["Platinum"] += 1
-    elif tier == "Gold":
-        tier_counts["Gold"] += 1
-    elif tier == "Silver":
-        tier_counts["Silver"] += 1
-    elif tier == "Bronze":
-        tier_counts["Bronze"] += 1
+    products = {
+        "laptop": 999.99,
+        "mouse": 29.99,
+        "keyboard": 79.99
+    }
+
+    for product_name in ["mouse", "monitor"]:
+        price = products.get(product_name)
+
+        if price is not None:
+            print(f"{product_name}: ${price:.2f}")
+        else:
+            print("Product not available")
+
+
+# ==================================================
+# UNIT 1.3 - MODIFYING DICTIONARIES
+# ==================================================
+
+# Beginner - 5 points
+def unit_1_3_beginner():
+    print("\nUNIT 1.3 - BEGINNER")
+
+    inventory = {}
+
+    inventory["apples"] = 10
+    inventory["bananas"] = 6
+    inventory["oranges"] = 8
+
+    print("Inventory:", inventory)
+
+
+# Intermediate - 10 points
+def unit_1_3_intermediate():
+    print("\nUNIT 1.3 - INTERMEDIATE")
+
+    scores = {
+        "Team A": 45,
+        "Team B": 38
+    }
+
+    scores["Team B"] = 52
+    scores["Team C"] = 41
+
+    removed_score = scores.pop("Team A")
+
+    print("Removed Team A score:", removed_score)
+    print("Updated scores:", scores)
+
+
+# Advanced - 15 points
+def unit_1_3_advanced():
+    print("\nUNIT 1.3 - ADVANCED")
+
+    cart = {}
+
+    cart["baseball"] = 24.99
+    cart["glove"] = 49.99
+    cart["water bottle"] = 12.50
+
+    cart["glove"] = 44.99
+
+    removed_price = cart.pop("water bottle")
+
+    print("Removed water bottle price:", removed_price)
+    print("Final cart:", cart)
+
+    total = sum(cart.values())
+    print(f"Total price: ${total:.2f}")
+
+
+# ==================================================
+# UNIT 2.1 - HOW DICTIONARIES WORK
+# ==================================================
+
+# Beginner - 5 points
+def unit_2_1_beginner():
+    print("\nUNIT 2.1 - BEGINNER")
+
+    examples = [
+        ('"student_name"', True),
+        ("[1, 2, 3]", False),
+        ("100", True),
+        ('("x", "y")', True),
+        ('{"a": 1}', False),
+        ("frozenset({1, 2})", True)
+    ]
+
+    reasons = {
+        '"student_name"': "Strings are immutable.",
+        "[1, 2, 3]": "Lists are mutable.",
+        "100": "Integers are immutable.",
+        '("x", "y")': "This tuple contains immutable strings.",
+        '{"a": 1}': "Dictionaries are mutable.",
+        "frozenset({1, 2})": "Frozensets are immutable."
+    }
+
+    for key, valid in examples:
+        if valid:
+            print(key, "is valid because", reasons[key])
+        else:
+            print(key, "is invalid because", reasons[key])
+
+    print("Hash of my name:", hash("Ronnie"))
+    print("Hash of 100:", hash(100))
+
+
+# Intermediate - 10 points
+def unit_2_1_intermediate():
+    print("\nUNIT 2.1 - INTERMEDIATE")
+
+    # Tuples can be used as dictionary keys.
+    locations = {
+        (40.7, -74.0): "New York",
+        (34.0, -118.2): "Los Angeles"
+    }
+
+    print("Locations:", locations)
+
+    data = {
+        "a": 1,
+        "b": 2,
+        "a": 3,
+        "b": 4
+    }
+
+    print("Dictionary:", data)
+    print("Length:", len(data))
+    print("The last value for each duplicate key is kept.")
+
+
+# Advanced - 15 points
+def unit_2_1_advanced():
+    print("\nUNIT 2.1 - ADVANCED")
+
+    high_scores = {
+        ("Alex", "Racing"): 950,
+        ("Jordan", "Puzzle"): 820,
+        ("Taylor", "Racing"): 1100
+    }
+
+    print("High scores:", high_scores)
+    print("Taylor's Racing score:",
+          high_scores[("Taylor", "Racing")])
+
+    big_list = list(range(100000))
+    big_dict = {number: True for number in range(100000)}
+
+    target = 99999
+
+    start = time.perf_counter()
+    list_result = target in big_list
+    list_time = time.perf_counter() - start
+
+    start = time.perf_counter()
+    dict_result = target in big_dict
+    dict_time = time.perf_counter() - start
+
+    print("Found in list:", list_result)
+    print("List search time:", list_time)
+
+    print("Found in dictionary:", dict_result)
+    print("Dictionary search time:", dict_time)
+
+    if dict_time > 0:
+        print("List/dictionary time ratio:",
+              list_time / dict_time)
+
+    print("Timing can change between computers.")
+
+
+# ==================================================
+# UNIT 2.2 - keys() AND values() METHODS
+# ==================================================
+
+# Beginner - 5 points
+def unit_2_2_beginner():
+    print("\nUNIT 2.2 - BEGINNER")
+
+    temps = {
+        "Monday": 72,
+        "Tuesday": 75,
+        "Wednesday": 68
+    }
+
+    print("Days:", list(temps.keys()))
+    print("Temperatures:", list(temps.values()))
+    print("Number of days:", len(temps))
+
+
+# Intermediate - 10 points
+def unit_2_2_intermediate():
+    print("\nUNIT 2.2 - INTERMEDIATE")
+
+    temps = {
+        "Monday": 72,
+        "Tuesday": 75,
+        "Wednesday": 68
+    }
+
+    print("Highest temperature:", max(temps.values()))
+    print("Lowest temperature:", min(temps.values()))
+
+    if "Friday" in temps:
+        print("Friday is in the dictionary.")
     else:
-        tier_counts["Inactive"] += 1
+        print("Friday is not in the dictionary.")
 
-for tier, count in tier_counts.items():
-    print(f"{tier}: {count}")
+    temps.setdefault("Thursday", 70)
+    print("After setdefault:", temps)
 
-# --- Part C: Rank ---
-print("--- Top and Bottom ---")
+    days_view = temps.keys()
 
-top_name = None
-top_minutes = 0
-for name, total in total_minutes.items():
-    if total > top_minutes:
-        top_minutes = total
-        top_name = name
+    print("Keys before adding Friday:", days_view)
 
-# Start above any real value, per the running-comparison hint
-bottom_name = None
-bottom_minutes = float("inf")
-for name, total in total_minutes.items():
-    if total < bottom_minutes:
-        bottom_minutes = total
-        bottom_name = name
+    temps["Friday"] = 74
 
-grand_total = sum(total_minutes.values())
-average_minutes = grand_total / len(total_minutes)
-
-print(f"Most contacted: {top_name} ({top_minutes} min)")
-print(f"Least contacted: {bottom_name} ({bottom_minutes} min)")
-print(f"Total minutes: {grand_total}")
-print(f"Average per contact: {average_minutes:.2f}")
-
-print("--- Above Average Contacts ---")
-for name, total in total_minutes.items():
-    if total > average_minutes:
-        print(f"{name}: {total}")
+    print("Keys after adding Friday:", days_view)
 
 
-# ===========================================================================
-# Phase 6: The Contact Hub Report
-# ===========================================================================
-print("\n=== Phase 6: Contact Hub Report ===")
+# Advanced - 15 points
+def unit_2_2_advanced():
+    print("\nUNIT 2.2 - ADVANCED")
 
-print(f"{'Name':<12}{'Category':<10}{'City':<14}{'Minutes':>8}  Tier")
-print("-" * 57)
+    prices = {
+        "laptop": 999,
+        "phone": 699,
+        "tablet": 449,
+        "watch": 299
+    }
 
-sorted_contacts = sorted(total_minutes.items(), key=lambda item: item[1], reverse=True)
-for name, total in sorted_contacts:
-    info = contact_book[name]
-    tier = get_tier(total)
-    print(f"{name:<12}{info['category']:<10}{info['city']:<14}{total:>8}  {tier}")
+    total = sum(prices.values())
+    average = total / len(prices)
 
-print("-" * 57)
-print(f"{len(total_minutes)} contacts | {grand_total} total minutes | "
-      f"{average_minutes:.2f} average")
+    most_expensive = max(
+        prices.items(),
+        key=lambda item: item[1]
+    )
+
+    least_expensive = min(
+        prices.items(),
+        key=lambda item: item[1]
+    )
+
+    print(f"Total value: ${total:.2f}")
+    print(f"Average price: ${average:.2f}")
+
+    print(
+        f"Most expensive: {most_expensive[0]} "
+        f"${most_expensive[1]:.2f}"
+    )
+
+    print(
+        f"Least expensive: {least_expensive[0]} "
+        f"${least_expensive[1]:.2f}"
+    )
+
+    keys_view = prices.keys()
+    keys_list = list(prices.keys())
+
+    print("Keys view memory:",
+          sys.getsizeof(keys_view), "bytes")
+
+    print("Keys list memory:",
+          sys.getsizeof(keys_list), "bytes")
+
+    prices.update({
+        "headphones": 129,
+        "camera": 549,
+        "speaker": 89
+    })
+
+    print("All products:")
+
+    for name, price in prices.items():
+        print(f"{name}: ${price:.2f}")
+
+
+# ==================================================
+# UNIT 2.3 - items() METHOD
+# ==================================================
+
+# Beginner - 5 points
+def unit_2_3_beginner():
+    print("\nUNIT 2.3 - BEGINNER")
+
+    colors = {
+        "apple": "red",
+        "banana": "yellow",
+        "grape": "purple"
+    }
+
+    for fruit, color in colors.items():
+        print(f"The {fruit} is {color}")
+
+    print("List of items:", list(colors.items()))
+
+
+# Intermediate - 10 points
+def unit_2_3_intermediate():
+    print("\nUNIT 2.3 - INTERMEDIATE")
+
+    prices = {
+        "coffee": 4.50,
+        "tea": 3.00,
+        "juice": 5.25
+    }
+
+    for item, price in prices.items():
+        taxed_price = price * 1.10
+        print(
+            f"{item}: ${price:.2f} + tax = "
+            f"${taxed_price:.2f}"
+        )
+
+    count = 0
+
+    for item, price in prices.items():
+        if price > 4.00:
+            count += 1
+
+    print("Items costing more than $4.00:", count)
+
+    x = 10
+    y = 20
+
+    x, y = y, x
+
+    print("After swapping: x =", x, "y =", y)
+
+    numbers = [1, 2, 3, 4, 5]
+
+    first, *middle, last = numbers
+
+    print("First element:", first)
+    print("Middle elements:", middle)
+    print("Last element:", last)
+
+
+# Advanced - 15 points
+def unit_2_3_advanced():
+    print("\nUNIT 2.3 - ADVANCED")
+
+    scores = {
+        "Alice": 88,
+        "Bob": 65,
+        "Carol": 92,
+        "Dave": 71,
+        "Eve": 58
+    }
+
+    best_student, best_score = max(
+        scores.items(),
+        key=lambda item: item[1]
+    )
+
+    print(
+        "Highest score:",
+        best_student,
+        "with",
+        best_score
+    )
+
+    passed = {}
+    failed = {}
+
+    for name, score in scores.items():
+        if score >= 70:
+            passed[name] = score
+        else:
+            failed[name] = score
+
+    print("Passed:", passed)
+    print("Failed:", failed)
+
+    average = sum(scores.values()) / len(scores)
+
+    deviations = {}
+
+    for name, score in scores.items():
+        deviations[name] = score - average
+
+    print(f"Class average: {average:.2f}")
+    print("Score deviations:")
+
+    for name, deviation in deviations.items():
+        print(f"{name}: {deviation:.2f}")
+
+    big_dict = {
+        number: number * 2
+        for number in range(50000)
+    }
+
+    start = time.perf_counter()
+
+    for key, value in big_dict.items():
+        result = key + value
+
+    items_time = time.perf_counter() - start
+
+    start = time.perf_counter()
+
+    for key in big_dict.keys():
+        value = big_dict[key]
+        result = key + value
+
+    keys_time = time.perf_counter() - start
+
+    print(f"items() time: {items_time:.6f} seconds")
+    print(f"keys() with lookup time: {keys_time:.6f} seconds")
+    print("Timing can change between computers.")
+
+
+# ==================================================
+# RUN ALL EXERCISES
+# ==================================================
+
+def main():
+    print("CS1350 Homework 2")
+    print("Dictionary Practice Exercises")
+
+    unit_1_1_beginner()
+    unit_1_1_intermediate()
+    unit_1_1_advanced()
+
+    unit_1_2_beginner()
+    unit_1_2_intermediate()
+    unit_1_2_advanced()
+
+    unit_1_3_beginner()
+    unit_1_3_intermediate()
+    unit_1_3_advanced()
+
+    unit_2_1_beginner()
+    unit_2_1_intermediate()
+    unit_2_1_advanced()
+
+    unit_2_2_beginner()
+    unit_2_2_intermediate()
+    unit_2_2_advanced()
+
+    unit_2_3_beginner()
+    unit_2_3_intermediate()
+    unit_2_3_advanced()
+
+
+if __name__ == "__main__":
+    main()
